@@ -75,7 +75,7 @@ export const loginUser = async (
     res.status(200).send({
       success: true,
       message: "User LoggedIn Successfully...",
-      data: { token, username: existingUser.full_name },
+      data: { token, username: existingUser.fullName },
     });
   } catch (error: any) {
     res.status(500).send({

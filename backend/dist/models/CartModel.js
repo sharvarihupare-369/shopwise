@@ -34,11 +34,23 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const userSchema = new mongoose_1.Schema({
-    fullName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+const cartSchema = new mongoose_1.Schema({
+    userId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+    },
+    items: [
+        {
+            productId: {
+                type: mongoose_1.default.Schema.Types.ObjectId,
+                ref: "product",
+                required: true,
+            },
+            quantity: { type: Number, required: true, default: 1, min: 1 },
+        },
+    ],
 }, { timestamps: true });
-const UserModel = mongoose_1.default.model("user", userSchema);
-exports.default = UserModel;
-//# sourceMappingURL=UserModel.js.map
+const CartModel = mongoose_1.default.model("cart", cartSchema);
+exports.default = CartModel;
+//# sourceMappingURL=CartModel.js.map
