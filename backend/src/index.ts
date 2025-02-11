@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import connection from "./config/db";
+import productRoutes from "./routes/productRoutes";
 
 const app = express();
 
@@ -16,7 +17,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Base Rouet!");
 });
 
-app.use("/auth", userRouter);
+app.use("/users", userRouter);
+app.use("/products", productRoutes);
 
 app.listen(PORT, async () => {
   try {
