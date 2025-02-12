@@ -68,7 +68,7 @@ export const addToCart = async (
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        cart.items.push({ productId, quantity:  quantity || 1});
+        cart.items.push({ productId, quantity: quantity || 1 });
       }
     }
     await cart.save();
@@ -76,6 +76,32 @@ export const addToCart = async (
       .status(200)
       .send({ success: true, message: "Product added to cart", data: cart });
   } catch (error: any) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export const getCart = async (
+  req: Request,
+  res: Response<APIResponse>
+): Promise<void> => {
+  try {
+    const userId = req.userId;
+    const cart = await CartModel.find({ userId }).populate("items.productId");
+    if (!cart) {
+      res
+        .status(200)
+        .send({ success: false, message: "No Data found in cart" });
+      return;
+    }
+    res
+      .status(200)
+      .send({ success: true, message: "Fetched Cart", data: cart });
+  } catch (error:any) {
     console.log(error);
     res.status(500).send({
       success: false,
