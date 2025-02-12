@@ -54,14 +54,6 @@ export const addToCart = async (
         items: [{ productId, quantity: quantity || 1 }],
       });
     } else {
-      // const itemsInd = cart.items.findIndex(
-      //   (el) => el.productId.toString() === productId
-      // );
-      // if (itemsInd > -1) {
-      //   cart.items[itemsInd].quantity += quantity || 1;
-      // } else {
-      //   cart.items.push({ productId: productId, quantity: quantity || 1 });
-      // }
       const existingItem = cart.items.find(
         (item) => item.productId.toString() === productId
       );

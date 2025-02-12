@@ -5,6 +5,7 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import connection from "./config/db";
 import productRoutes from "./routes/productRoutes";
+import orderRoutes from "./routes/orderRoutes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/users", userRouter);
 app.use("/products", productRoutes);
+app.use("/order", orderRoutes);
 
 app.listen(PORT, async () => {
   try {
