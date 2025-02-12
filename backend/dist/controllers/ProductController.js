@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCart = exports.addToCart = exports.getAllProducts = void 0;
+exports.deleteCartItems = exports.getCart = exports.addToCart = exports.getAllProducts = void 0;
 const ProductModel_1 = __importDefault(require("../models/ProductModel"));
 const CartModel_1 = __importDefault(require("../models/CartModel"));
 const getAllProducts = async (req, res) => {
@@ -98,4 +98,33 @@ const getCart = async (req, res) => {
     }
 };
 exports.getCart = getCart;
+const deleteCartItems = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const userId = req.userId;
+        if (!userId) {
+            res.status(400).send({ success: false, message: "Not authorized!" });
+            return;
+        }
+        const updatedCart = await CartModel_1.default.findOneAndUpdate({ userId }, { $pull: { items: { productId } } }, { new: true });
+        if (!updatedCart) {
+            res.status(404).send({ success: false, message: "Cart not found!" });
+            return;
+        }
+        res.status(200).send({
+            success: true,
+            message: "Item removed from cart successfully",
+            data: updatedCart,
+        });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+exports.deleteCartItems = deleteCartItems;
 //# sourceMappingURL=ProductController.js.map
