@@ -11,8 +11,8 @@ const db_1 = __importDefault(require("./config/db"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
-app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+app.use(express_1.default.json());
 app.get("/", (req, res) => {
     res.send("Welcome to Base Rouet!");
 });

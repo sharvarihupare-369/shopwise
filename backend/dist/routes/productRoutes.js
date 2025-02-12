@@ -9,5 +9,6 @@ const ProductController_1 = require("../controllers/ProductController");
 const router = express_1.default.Router();
 router.get("/", authentication_1.authentication, ProductController_1.getAllProducts);
 router.post("/addtocart", authentication_1.authentication, ProductController_1.addToCart);
+router.get("/getcart", authentication_1.authentication, ProductController_1.getCart);
 exports.default = router;
 //# sourceMappingURL=productRoutes.js.map

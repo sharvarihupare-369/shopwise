@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addToCart = exports.getAllProducts = void 0;
+exports.getCart = exports.addToCart = exports.getAllProducts = void 0;
 const ProductModel_1 = __importDefault(require("../models/ProductModel"));
 const CartModel_1 = __importDefault(require("../models/CartModel"));
 const getAllProducts = async (req, res) => {
@@ -51,12 +51,20 @@ const addToCart = async (req, res) => {
             });
         }
         else {
-            const itemsInd = cart.items.findIndex((el) => el.productId.toString() === productId);
-            if (itemsInd > -1) {
-                cart.items[itemsInd].quantity += quantity || 1;
+            // const itemsInd = cart.items.findIndex(
+            //   (el) => el.productId.toString() === productId
+            // );
+            // if (itemsInd > -1) {
+            //   cart.items[itemsInd].quantity += quantity || 1;
+            // } else {
+            //   cart.items.push({ productId: productId, quantity: quantity || 1 });
+            // }
+            const existingItem = cart.items.find((item) => item.productId.toString() === productId);
+            if (existingItem) {
+                existingItem.quantity += quantity;
             }
             else {
-                cart.items.push({ productId: productId, quantity: quantity || 1 });
+                cart.items.push({ productId, quantity: quantity || 1 });
             }
         }
         await cart.save();
@@ -74,4 +82,28 @@ const addToCart = async (req, res) => {
     }
 };
 exports.addToCart = addToCart;
+const getCart = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const cart = await CartModel_1.default.find({ userId }).populate("items.productId");
+        if (!cart) {
+            res
+                .status(200)
+                .send({ success: false, message: "No Data found in cart" });
+            return;
+        }
+        res
+            .status(200)
+            .send({ success: true, message: "Fetched Cart", data: cart });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+exports.getCart = getCart;
 //# sourceMappingURL=ProductController.js.map
