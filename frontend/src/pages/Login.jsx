@@ -16,7 +16,6 @@ const Login = () => {
     const userData = { email, password };
     try {
       const res = await loginUser(userData);
-      console.log(res,"res");
       if (res.success) {
         toast.success(res.message);
         setToken(res.data.token);

@@ -15,7 +15,6 @@ const Signup = () => {
     const userData = { fullName, email, password };
     try {
       const response = await registerUser(userData);
-      console.log(response, "response in this ");
       if (response.success) {
         toast.success(response.message);
         setFullName("");

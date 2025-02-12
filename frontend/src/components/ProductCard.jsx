@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IoBagCheckOutline,
   IoCartOutline,
@@ -12,7 +12,11 @@ const ProductCard = ({ product, addToCart, cart }) => {
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
 
-  const isProductInCart = cart.some((el) => el.productId._id === product._id);
+  const isItemInCart = cart.some((el) => el.productId._id === product._id);
+
+  const handleAddToCartItem = async () => {
+    await addToCart(product._id);
+  };
 
   return (
     <div
@@ -45,19 +49,20 @@ const ProductCard = ({ product, addToCart, cart }) => {
       </div>
 
       <div className="absolute bottom-3 right-3">
-        {isProductInCart ? (
+        {isItemInCart ? (
           <button
             onClick={() => navigate("/addtocart")}
-            className="w-full flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition shadow-md"
+            className="cursor-pointer w-full flex items-center justify-center gap-2 bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition shadow-md"
           >
-            <IoBagCheckOutline size={22} className="cursor-pointer" />
+            <IoBagCheckOutline size={22} />
           </button>
         ) : (
           <button
-            onClick={() => addToCart(product._id)}
-            className="flex items-center justify-center p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md"
+            // onClick={() => addToCart(product._id)}
+            onClick={handleAddToCartItem}
+            className="cursor-pointer flex items-center justify-center p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition shadow-md"
           >
-            <IoCartOutline size={20} className="cursor-pointer" />
+            <IoCartOutline size={20} />
           </button>
         )}
       </div>

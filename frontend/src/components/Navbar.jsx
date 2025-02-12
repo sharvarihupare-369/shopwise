@@ -13,7 +13,6 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       const response = await logoutUser(token);
-      console.log(response,"response logout")
       if (response.success) {
         toast.success(response.message);
         setTimeout(() => {

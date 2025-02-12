@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { getProductsFromCart } from "../api/products";
+import { getProductsFromCart, removeItemFromCart } from "../api/products";
 import { toast, ToastContainer } from "react-toastify";
 import { IoTrashOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import { placeOrder } from "../api/order";
+import Modal from "../components/Modal";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const AddToCart = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAddressInput, setShowAddressInput] = useState(false);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") || "";
 
@@ -46,8 +53,8 @@ const AddToCart = () => {
       (acc, item) => acc + item.productId.price * item.quantity,
       0
     );
-    const deliveryCharge = subtotal > 500 ? 0 : 50; 
-    const tax = subtotal * 0.1; 
+    const deliveryCharge = subtotal > 500 ? 0 : 50;
+    const tax = subtotal * 0.1;
     const totalPrice = subtotal + tax + deliveryCharge;
 
     return { subtotal, tax, deliveryCharge, totalPrice };
@@ -55,6 +62,26 @@ const AddToCart = () => {
 
   const { subtotal, tax, deliveryCharge, totalPrice } = calculateTotal();
 
+  const handlePlaceOrder = async () => {
+    const data = await placeOrder({ shippingAddress: shippingAddress }, token);
+    if (data.success) {
+      setShowSuccessModal(true);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await removeItemFromCart(id, token);
+      if (response.success) {
+        toast.success("Item removed from cart");
+        fetchCart()
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
   return isLoading ? (
     <Loader />
   ) : (
@@ -111,7 +138,10 @@ const AddToCart = () => {
                         +
                       </button>
                     </div>
-                    <button className="text-red-600 hover:text-red-800">
+                    <button
+                      onClick={() => handleDelete(item.productId._id)}
+                      className="text-red-600 hover:text-red-800 cursor-pointer"
+                    >
                       <IoTrashOutline size={20} />
                     </button>
                   </div>
@@ -143,16 +173,49 @@ const AddToCart = () => {
               <span>Total:</span>
               <span>₹{totalPrice.toFixed(2)}</span>
             </div>
-            <button
-              onClick={() => navigate("/checkout")}
-              className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition"
-            >
-              Place Order
-            </button>
+            {!showAddressInput ? (
+              <button
+                onClick={() => setShowAddressInput(true)}
+                className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer"
+              >
+                Enter Shipping Address
+              </button>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  placeholder="Enter Shipping Address"
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  className="mt-4 w-full p-2 border rounded-md"
+                />
+                <button
+                  onClick={handlePlaceOrder}
+                  className="mt-4 w-full bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition cursor-pointer"
+                >
+                  Confirm & Place Order
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
       <ToastContainer />
+      {showSuccessModal && (
+        <Modal onClose={() => navigate("/")} duration={2000}>
+          <h2 className="text-2xl font-bold text-center">🎉 Order Placed!</h2>
+          <p className="text-center text-gray-600">
+            Your order has been placed successfully. Thank you for shopping with
+            us!
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="mt-4 w-full bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer"
+          >
+            View Products
+          </button>
+        </Modal>
+      )}
     </div>
   );
 };
