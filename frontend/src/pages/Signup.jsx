@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../utils/http";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { registerUser } from "../api/auth";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -78,8 +78,8 @@ const Signup = () => {
             />
           </div>
           <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md transition duration-300"
+            type="submit" 
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md transition duration-300 cursor-pointer"
           >
             Sign Up
           </button>

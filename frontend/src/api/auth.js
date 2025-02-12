@@ -1,5 +1,6 @@
 import axios from "axios";
-const BASE_URL = "https://shopwise-xbac.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("token");
 
 export const registerUser = async (userData) => {
   try {
@@ -16,27 +17,24 @@ export const loginUser = async (userData) => {
   try {
     const res = await axios.post(`${BASE_URL}/users/login`, userData);
     return res.data;
-    
   } catch (error) {
     console.log(error.response.data.message);
     return error.response.data.message;
   }
-};
+  };
 
-// export const logoutUser = async (token) => {
-//   try {
-//     const res = await axios.post(`${BASE_URL}/users/logout`, null, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     // return res;
-//     // console.log(res.data);
-//     if (res.status === 200) {
-//       return res.data.message;
-//     }
-//   } catch (error) {
-//     console.log(error.response.data.message);
-//     return error.response.data.message;
-//   }
-// };
+  export const logoutUser = async (token) => {
+    console.log(token)
+    try {
+      const res = await axios.get(`${BASE_URL}/users/logout`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res)
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data.message);
+      return error.response.data.message;
+    }
+  };
