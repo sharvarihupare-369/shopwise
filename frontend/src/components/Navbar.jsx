@@ -8,19 +8,20 @@ import "react-toastify/dist/ReactToastify.css";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token") || "";
 
   const handleLogout = async () => {
     try {
-      const response = await logoutUser();
+      const response = await logoutUser(token);
+      console.log(response,"response logout")
       if (response.success) {
-        toast.success(data.message);
+        toast.success(response.message);
         setTimeout(() => {
           localStorage.removeItem("token");
-          localStorage.removeItem("username");
           navigate("/login");
         }, 3000);
       } else {
-        toast.error(response);
+        toast.error(response.message || "Logout Failed!");
       }
     } catch (error) {
       toast.error("Something went wrong!");

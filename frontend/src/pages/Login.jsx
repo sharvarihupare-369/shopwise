@@ -2,12 +2,12 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContext.jsx";
 import { loginUser } from "../api/auth";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sharvari@gmail.com");
+  const [password, setPassword] = useState("Sharvari@123");
   const navigate = useNavigate();
   const { setToken, setUsername } = useContext(AuthContext);
 
@@ -16,11 +16,11 @@ const Login = () => {
     const userData = { email, password };
     try {
       const res = await loginUser(userData);
-      // console.log(res,"res");
+      console.log(res,"res");
       if (res.success) {
         toast.success(res.message);
         setToken(res.data.token);
-        setUsername(res.data.fullName);
+        // setUsername(res.data.fullName);
         setEmail("");
         setPassword("");
         setTimeout(() => {
