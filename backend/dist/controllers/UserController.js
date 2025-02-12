@@ -60,7 +60,7 @@ const loginUser = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "User LoggedIn Successfully...",
-            data: { token, username: existingUser.fullName },
+            data: { token, name: existingUser.fullName },
         });
     }
     catch (error) {

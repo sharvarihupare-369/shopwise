@@ -93,6 +93,43 @@ export const getCart = async (
     res
       .status(200)
       .send({ success: true, message: "Fetched Cart", data: cart });
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteCartItems = async (
+  req: Request,
+  res: Response<APIResponse>
+): Promise<void> => {
+  try {
+    const { productId } = req.params;
+    const userId = req.userId;
+
+    if (!userId) {
+      res.status(400).send({ success: false, message: "Not authorized!" });
+      return;
+    }
+    const updatedCart = await CartModel.findOneAndUpdate(
+      { userId },
+      { $pull: { items: { productId } } },
+      { new: true }
+    );
+    if (!updatedCart) {
+      res.status(404).send({ success: false, message: "Cart not found!" });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Item removed from cart successfully",
+      data: updatedCart,
+    });
   } catch (error:any) {
     console.log(error);
     res.status(500).send({
